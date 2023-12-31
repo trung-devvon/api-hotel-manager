@@ -16,5 +16,6 @@ router.post(
   controllers.login
 );
 router.get("/getCurrent", verifyToken, controllers.getCurrentUser);
+router.get("/check", controllers.getRoles);
 
 module.exports = router;

@@ -14,7 +14,7 @@ const verifyToken = async (req, res, next) => {
   } else
     return res.status(401).json({
       success: false,
-      mes: "Yêu cầu đăng nhập.",
+      message: "Yêu cầu đăng nhập.",
     })
 }
 const isAdmin = (req, res, next) => {

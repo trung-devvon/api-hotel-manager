@@ -59,7 +59,13 @@ const getCurrentUser = asyncHandler(async (req, res) => {
     user,
   });
 });
-const logout = asyncHandler(async (req, res) => {
-  
+const getRoles = asyncHandler(async (req, res) => {
+  let roles = await db.Role.findAll({ raw: true })
+  if (roles && roles.length > 0) roles = btoa(JSON.stringify(roles))
+  return res.json({
+    success: roles ? true : false,
+    message: roles ? "Good Job!" : "Có Lỗi hãy thử lại sau!",
+    roles
+  })
 })
-module.exports = { register, login, getCurrentUser };
+module.exports = { register, login, getCurrentUser, getRoles };
