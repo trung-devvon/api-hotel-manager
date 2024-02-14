@@ -12,4 +12,9 @@ router.post(
   customValidate(joi.object({ name, code, image })),
   ctrls.createNewDestination
 );
+router.get(
+  "/get-all",
+  ctrls.getAllDestinations
+);
+router.get("/get", ctrls.getDestinations)
 module.exports = router;

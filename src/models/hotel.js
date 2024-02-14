@@ -1,8 +1,6 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-const { v4 } = require('uuid');
+"use strict";
+const { Model } = require("sequelize");
+const { v4 } = require("uuid");
 module.exports = (sequelize, DataTypes) => {
   class Hotel extends Model {
     /**
@@ -12,48 +10,63 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Hotel.belongsTo(models.Destination, {
+        foreignKey: "destinationCode", // column in hotels
+        targetKey: "code", // column in destinations
+        as: "destinationData", // as name
+      });
+      /** 
+       *  
+       * - foreignKey: 'destinationCode': Đây là tên của cột trong bảng Hotel sẽ chứa khóa ngoại, kết nối đến bảng Destination.
+      - targetKey: 'code': Đây là tên của cột trong bảng Destination mà khóa ngoại của Hotel sẽ trỏ đến. Nghĩa là, khóa ngoại của Hotel sẽ giữ giá trị tương ứng với cột code của bảng Destination.
+      - as: 'destinationData': Đây là biệt danh (alias) cho quan hệ. Khi truy vấn dữ liệu và sử dụng quan hệ này, có thể sử dụng biệt danh này để xác định quan hệ giữa Hotel và Destination.
+      * 
+      */ 
+     //
+      
     }
   }
-  Hotel.init({
-    name: DataTypes.STRING,
-    star: DataTypes.FLOAT,
-    destinationCode: DataTypes.STRING,
-    postedBy: DataTypes.UUID,
-    description: DataTypes.TEXT,
-    images: {
-      type: DataTypes.TEXT,
-      set(value) {
-        this.setDataValue("images", JSON.stringify(value))
+  Hotel.init(
+    {
+      name: DataTypes.STRING,
+      star: DataTypes.FLOAT,
+      destinationCode: DataTypes.STRING,
+      postedBy: DataTypes.UUID,
+      description: DataTypes.TEXT,
+      typeCode: DataTypes.STRING,
+      images: {
+        type: DataTypes.TEXT,
+        set(value) {
+          this.setDataValue("images", JSON.stringify(value));
+        },
+        get() {
+          const raw = this.getDataValue("images");
+          return raw ? JSON.parse(raw) : [];
+        },
       },
-      get() {
-        const raw = this.getDataValue("images")
-        return raw ? JSON.parse(raw): []
-      }
-    },
-    facilities: {
-      type: DataTypes.TEXT,
-      set(value) {
-        this.setDataValue("facilities", JSON.stringify(value))
+      facilities: {
+        type: DataTypes.TEXT,
+        set(value) {
+          this.setDataValue("facilities", JSON.stringify(value));
+        },
+        get() {
+          const raw = this.getDataValue("facilities");
+          return raw ? JSON.parse(raw) : [];
+        },
       },
-      get() {
-        const raw = this.getDataValue("facilities")
-        return raw ? JSON.parse(raw): []
-      }
+      address: DataTypes.STRING,
+      status: {
+        type: DataTypes.ENUM,
+        values: ["ROOMS", "OUT_OF_ROOM"],
+      },
     },
-    address: DataTypes.STRING,
-    // typeCode: DataTypes.STRING,
-    status: {
-      type: DataTypes.ENUM,
-      values: ["ROOMS", "OUT_OF_ROOM"]
-    },
-    lastName: DataTypes.STRING,
-    email: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'Hotel',
+    {
+      sequelize,
+      modelName: "Hotel",
+    }
+  );
+  Hotel.beforeCreate(function (model) {
+    model.id = v4();
   });
-  Hotel.beforeCreate(function(model) {
-    model.id = v4()
-  })
   return Hotel;
 };

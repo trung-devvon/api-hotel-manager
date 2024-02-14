@@ -32,6 +32,9 @@ module.exports = {
       description: {
         type: Sequelize.TEXT('long')
       },
+      typeCode: {
+        type: Sequelize.STRING
+      },
       status: {
         type: Sequelize.ENUM(["ROOMS", "OUT_OF_ROOMS"]),
         defaultValue: "ROOMS",

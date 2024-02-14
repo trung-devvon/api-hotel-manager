@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const controllers = require("../controllers/auth.controllers");
+const controllers = require("../controllers/user.controllers");
 const { email, password, name, avatar } = require("../middlewares/joiSchema");
 const validate = require("../middlewares/validation");
 const { verifyToken } = require("../middlewares/verifyToken");
