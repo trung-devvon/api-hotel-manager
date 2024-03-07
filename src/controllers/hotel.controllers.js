@@ -13,12 +13,13 @@ const createNewHotel = asyncHandler(async (req, res) => {
     message: hotel[1]
       ? "Khách sạn đã được tạo thành công."
       : "Tên khách sạn đã được sử dụng.",
+    hotel: hotel[0],
   });
 });
 const getHotels = asyncHandler(async (req, res) => {
-  const { limit, pages, fields, keyword, order, ...query } = req.query;
+  const { limit, page, fields, keyword, order, ...query } = req.query;
   const limitQuery = +limit || +process.env.LIMIT;
-  const offset = +pages - 1 || 0;
+  const offset = +page - 1 || 0;
   const offsetQuery = offset * limitQuery;
   if (keyword)
     query[Op.or] = [
@@ -43,8 +44,8 @@ const getHotels = asyncHandler(async (req, res) => {
   //
   queries.offset = offsetQuery;
   queries.limit = limitQuery;
-  if(order) queries.order = order
-  else queries.order = [["createdAt", "DESC"]]
+  if (order) queries.order = order;
+  else queries.order = [["createdAt", "DESC"]];
   if (fields) queries.attributes = fields.split(",");
   if (limit === "All") {
     const q = { raw: true };
@@ -60,12 +61,11 @@ const getHotels = asyncHandler(async (req, res) => {
       ...queries,
       include: [
         {
-          model: db.Destination, // get data from table Destinations 
+          model: db.Destination, // get data from table Destinations
           attributes: ["code", "name", "image"], // with fields
           as: "destinationData", // with name
         },
       ],
-      raw: true,
     });
     return res.json({
       success: response ? true : false,

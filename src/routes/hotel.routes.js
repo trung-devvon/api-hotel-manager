@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const joi = require("joi");
-const { name, code, image, stringRequired, arrayRequired } = require("../middlewares/joiSchema");
+const { name, code, image, stringRequired, arrayRequired, string } = require("../middlewares/joiSchema");
 const customValidate = require("../middlewares/validation");
 const { isAdmin, verifyToken } = require("../middlewares/verifyToken");
 const ctrls = require("../controllers/hotel.controllers");
@@ -17,7 +17,8 @@ router.post(
       destinationCode: stringRequired,
       images: arrayRequired,
       facilities: arrayRequired,
-      address: stringRequired
+      address: stringRequired,
+      description: string
     }))
   );
   router.get('/', ctrls.getHotels)

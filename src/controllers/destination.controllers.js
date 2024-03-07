@@ -15,7 +15,7 @@ const createNewDestination = asyncHandler(async (req, res) => {
     })
 })
 const getAllDestinations = asyncHandler(async (req, res) => {
-    const destinations = await db.Destination.findAll({ attributes: ['code', 'name']})
+    const destinations = await db.Destination.findAll({ attributes: ['code', 'name', 'image']})
     return res.json({
         success: destinations[1] ? true : false,
         message: destinations[1] ? 'Good Job!' : 'Có lỗi xảy ra',
