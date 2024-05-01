@@ -29,6 +29,9 @@ module.exports = {
       facilities: {
         type: Sequelize.TEXT('long')
       },
+      lnglat: {
+        type: Sequelize.STRING,
+      },
       description: {
         type: Sequelize.TEXT('long')
       },

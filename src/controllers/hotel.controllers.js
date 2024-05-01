@@ -9,10 +9,10 @@ const createNewHotel = asyncHandler(async (req, res) => {
     defaults: req.body,
   });
   return res.json({
-    success: hotel[1] ? true : false,
+    success: !!hotel[1],
     message: hotel[1]
-      ? "Khách sạn đã được tạo thành công."
-      : "Tên khách sạn đã được sử dụng.",
+      ? "Chỗ nghỉ đã được tạo thành công."
+      : "Tên chỗ nghỉ đã được sử dụng.",
     hotel: hotel[0],
   });
 });
@@ -65,6 +65,10 @@ const getHotels = asyncHandler(async (req, res) => {
           attributes: ["code", "name", "image"], // with fields
           as: "destinationData", // with name
         },
+        {
+          model: db.GeneralRule,
+          as: "rules"
+        }
       ],
     });
     return res.json({
@@ -73,7 +77,57 @@ const getHotels = asyncHandler(async (req, res) => {
     });
   }
 });
+const addRulesById = asyncHandler(async (req, res) => {
+  const { hotelId } = req.params
+  const response = await db.GeneralRule.findOrCreate({
+    where: { hotelId },
+    defaults: req.body
+  })
+  return res.json({
+    success: response[1] ? true : false,
+    message: response[1] ? 'Đã Thêm' : 'Thiết lập chung này đã được tạo'
+  })
+})
+const getTypeRooms = asyncHandler(async (req, res) => {
+  const response = await db.GeneralRule.findAll()
+  return res.json({
+    success: response ? true : false,
+    message: response[1] ? 'Added' : 'Có lỗi, hãy thử lại sau',
+    typerooms: response
+  })
+})
+const createAvailable = asyncHandler(async (req, res) => {
+  const response = await db.Availability.create(req.body)
+  return res.json({
+    success: response ? true : false,
+    message: response ? 'Đã thêm quy định phòng trống' : 'có lỗi hãy thử lại sau'
+  })
+})
+const ratings = asyncHandler(async (req, res) => {
+  const { content, score } = req.body
+  const { hotelId } = req.params
+  const { uid } = req.user
+  const alreadyRatingUser = await db.Rating.findOne({
+    where: { uid, targetId: hotelId}
+  })
+  if (alreadyRatingUser) {
+    await db.Rating.update(req.body, {
+      where: { id: alreadyRatingUser.id }
+    })
+  } else {
+    await db.Rating.create({
+      content, score, targetId: hotelId, uid
+    })
+  }
+  return res.json({
+    success: true,
+    message: 'Updated'
+  })
+})
 module.exports = {
   createNewHotel,
   getHotels,
+  addRulesById,
+  getTypeRooms,
+  createAvailable
 };

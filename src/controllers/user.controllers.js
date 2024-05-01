@@ -55,7 +55,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 
   return res.json({
     success: user ? true : false,
-    message: user ? "Good Job!" : "Có lôi hãy thử lại sau!",
+    message: user ? "Good Job!" : "Có lỗi hãy thử lại sau!",
     user,
   });
 });

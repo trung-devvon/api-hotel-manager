@@ -23,7 +23,19 @@ module.exports = (sequelize, DataTypes) => {
       * 
       */ 
      //
-      
+      Hotel.belongsTo(models.HotelType, {
+        foreignKey: 'typeCode',
+        as: 'typeHotel'
+      })
+      // Hotel.belongsTo(models.HotelType, {
+      //   foreignKey: 'typeCode',
+      //   targetKey: 'code',
+      //   as: 'hotelData'
+      // })
+      Hotel.hasOne(models.GeneralRule, {
+        foreignKey: 'hotelId',
+        as: 'rules'
+      })
     }
   }
   Hotel.init(
@@ -53,6 +65,16 @@ module.exports = (sequelize, DataTypes) => {
           const raw = this.getDataValue("facilities");
           return raw ? JSON.parse(raw) : [];
         },
+      },
+      lnglat: {
+        type: DataTypes.TEXT,
+        set(value) {
+          this.setDataValue("lnglat", JSON.stringify(value))
+        },
+        get() {
+          const raw = this.getDataValue("lnglat");
+          return raw ? JSON.parse(raw) : [];
+        }
       },
       address: DataTypes.STRING,
       status: {
